@@ -1,6 +1,6 @@
 const express = require('express');
 const route = express.Router();
-const { updateMessage,deleteMessage,createNewMessage,getAllMessages,getMessageById } = require('../controller/messageController');
+const { updateMessage,deleteMessage,createNewMessage,getAllMessages,getMessageById,likeDeletMessage } = require('../controller/messageController');
 
 /**
  * @desc get all messages
@@ -32,7 +32,15 @@ route.post('/',createNewMessage);
  * @method PUT
  * @access public
 */
-route.put('/',updateMessage);
+route.put('/:id',updateMessage);
+
+/**
+ * @desc message be like deleted
+ * @route api/message/:id
+ * @method PUT
+ * @access public
+*/
+route.put('/likeDeleted/:id',likeDeletMessage);
 
 /**
  * @desc delete a message
@@ -40,7 +48,7 @@ route.put('/',updateMessage);
  * @method DELETE
  * @access public
 */
-route.delete('/',deleteMessage);
+route.delete('/:id',deleteMessage);
 
 
 module.exports = route

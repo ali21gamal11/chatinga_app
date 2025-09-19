@@ -1,5 +1,5 @@
 const bcrypt = require('bcrypt');
-const {Message,validateNewMessage,validateUpdateMessage} = require('../models/message');
+const {Message,validateNewMessage,validateUpdateMessage,validateLikeDeleteMessage} = require('../models/message');
 
 const getAllMessages = async(req,res)=>{
     try{
@@ -28,7 +28,7 @@ const createNewMessage = async(req,res)=>{
 const getMessageById = async (req,res)=>{
     try{
         const messageId = req.params.id
-        const message = await mongoose.findById(messageId);
+        const message = await Message.findById(messageId);
 
         if(message){
             res.status(200).json(message);
@@ -40,24 +40,51 @@ const getMessageById = async (req,res)=>{
 }
 
 const updateMessage = async (req,res)=>{
-
     const { error } = validateUpdateMessage(req.body);
     if(error){
-        return res.status(400).json({error:message.details[0].erorr});
+        return res.status(400).json({error:error.details[0].message});
+    }
+
+    const message = await Message.findById(req.params.id);
+    if(!message){
+        return res.status(404).json({message:'message not found'});
     }
 
     try{
 
-        const messageUpdate = await findByIdAndUpdate(req.params.id,{set:{
+        const messageUpdate = await Message.findByIdAndUpdate(req.params.id,{$set:{
             content:req.body.content,
-            senderId:parseInt(req.body.age),
-            receiverId:req.body.email
+            edited:true
         }},{new:true})
-        req.body.status(200).json(messageUpdate);
+        res.status(200).json(messageUpdate);
     }catch(err){
-        return res.status(500),json({error:`${err}`});
+        return res.status(500).json({error:`${err}`});
     }
 }
+
+const likeDeletMessage = async (req,res)=>{
+    const { error } = validateLikeDeleteMessage(req.body);
+    if(error){
+        return res.status(400).json({error:error.details[0].message});
+    }
+
+    const message = await Message.findById(req.params.id);
+    if(!message){
+        return res.status(404).json({message:'message not found'});
+    }
+
+    try{
+
+        const messageUpdate = await Message.findByIdAndUpdate(req.params.id,{$set:{
+            deleted:true,
+            deletedAt:new Date()
+        }},{new:true})
+        res.status(200).json(messageUpdate);
+    }catch(err){
+        return res.status(500).json({error:`${err}`});
+    }
+}
+
 
 const deleteMessage = async(req,res)=>{
     try{
@@ -65,7 +92,10 @@ const deleteMessage = async(req,res)=>{
         if(message){
             await Message.findByIdAndDelete(req.params.id);
             res.status(200).json({message:`message :(' ${message.content} ') has been deleted`})
+        }else{
+            return res.status(404).json({message:'message not found'});
         }
+
     }
     catch(err){ 
         res.status(400).json({message:"somthing went wrong",error:`${error}`});
@@ -73,5 +103,5 @@ const deleteMessage = async(req,res)=>{
 }
 
 module.exports = {
-    updateMessage,deleteMessage,createNewMessage,getAllMessages,getMessageById
+    updateMessage,deleteMessage,createNewMessage,getAllMessages,getMessageById,likeDeletMessage
 }

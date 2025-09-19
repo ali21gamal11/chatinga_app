@@ -16,32 +16,49 @@ const MessageSchema = mongoose.Schema({
     receiverId:{
         type:mongoose.Schema.Types.ObjectId,
         required:true,
-        ref:"User"
+        ref:"User",
     },
     edited:{
         type:Boolean,
         default:false
+    },
+    deleted:{
+        type:Boolean,
+        default:false
+    },
+        deletedAt:{
+        type:Date,
+        default:null
     }
 },{timestamps:true});
 
 const Message = mongoose.model("Message",MessageSchema);
 
 function validateNewMessage(obj){
-    const schema = {
-        contant:joi.string().required().min(1).max(200),
+    const schema = joi.object({
+        content:joi.string().required().min(1).max(200),
         senderId:joi.string().required(),
         receiverId:joi.string().required(),
-    }
+    })
     return schema.validate(obj);
 }
 
 function validateUpdateMessage(obj){
-    const schema = {
-        contant:joi.string().min(1).max(200),
-    }
+    const schema = joi.object({
+        content:joi.string().min(1).max(200),
+        edited:joi.boolean()
+    })
+    return schema.validate(obj);
+}
+
+function validateLikeDeleteMessage(obj){
+    const schema = joi.object({
+        deleted:joi.boolean(),
+        deletedAt:joi.date()
+    })
     return schema.validate(obj);
 }
 
 module.exports = {
-    Message,validateNewMessage,validateUpdateMessage
+    Message,validateNewMessage,validateUpdateMessage,validateLikeDeleteMessage
 }
