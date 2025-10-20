@@ -1,6 +1,6 @@
 const express = require('express');
 const route = express.Router();
-const { updateMessage,deleteMessage,createNewMessage,getAllMessages,getMessageById,likeDeletMessage } = require('../controller/messageController');
+const { updateMessage,deleteMessage,createNewMessage,getAllMessages,getMessageById,likeDeletMessage,getChatMessages } = require('../controller/messageController');
 
 /**
  * @desc get all messages
@@ -9,6 +9,14 @@ const { updateMessage,deleteMessage,createNewMessage,getAllMessages,getMessageBy
  * @access public
 */
 route.get('/',getAllMessages);
+
+/**
+ * @desc get all messages between tow users
+ * @route api/message/:id1:id2
+ * @method GET
+ * @access private
+*/
+route.get('/:id1/:id2',getChatMessages);
 
 /**
  * @desc get message by id

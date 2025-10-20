@@ -18,12 +18,42 @@ const createNewMessage = async(req,res)=>{
         const message = new Message({
             content:req.body.content,senderId:req.body.senderId,receiverId:req.body.receiverId
         })
+        
         const result = await message.save();
+
+        const io = req.app.get("io");
+        io.emit("newMessage",result);
+        
         res.status(201).json(result);
-
-
+        
     }catch(err){ res.status(500).json({err:`${err}`})}
 }
+
+
+const getChatMessages= async (req,res)=>{
+    try{
+        const { id1, id2 } = req.params;
+
+        if (!id1 || !id2) {
+        return res.status(400).json({ message: "Both user IDs are required" });
+
+        };
+        const messages = await Message.find({
+        $or: [
+            { senderId: id1, receiverId: id2 },
+            { senderId: id2, receiverId: id1 }
+        ]
+        }).sort({ createdAt: 1 });
+
+        if(messages){
+            res.status(200).json(messages);
+        }else{
+            res.status(404).json({messages:'message not found'});
+        }
+    }catch(err){res.status(400).json({message:`somthing went erong in DataBase, error=>:${err}`})}
+
+}
+
 
 const getMessageById = async (req,res)=>{
     try{
@@ -103,5 +133,5 @@ const deleteMessage = async(req,res)=>{
 }
 
 module.exports = {
-    updateMessage,deleteMessage,createNewMessage,getAllMessages,getMessageById,likeDeletMessage
+    updateMessage,deleteMessage,createNewMessage,getAllMessages,getMessageById,likeDeletMessage,getChatMessages
 }
