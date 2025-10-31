@@ -4,6 +4,9 @@ const jwt = require('jsonwebtoken');
 function virfyToken(req,res,next){
 
     const token = req.headers.token;
+
+    console.log("Headers:", req.headers);
+
     if(token){
         try{
             const decoded = jwt.verify(token,process.env.SECKEY);

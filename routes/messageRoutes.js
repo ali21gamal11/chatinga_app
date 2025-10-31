@@ -1,5 +1,6 @@
 const express = require('express');
 const route = express.Router();
+const {virfyToken} = require("../middleware/verifyToken");
 const { updateMessage,deleteMessage,createNewMessage,getAllMessages,getMessageById,likeDeletMessage,getChatMessages } = require('../controller/messageController');
 
 /**
@@ -8,7 +9,7 @@ const { updateMessage,deleteMessage,createNewMessage,getAllMessages,getMessageBy
  * @method GET
  * @access public
 */
-route.get('/',getAllMessages);
+route.get('/',virfyToken,getAllMessages);
 
 /**
  * @desc get all messages between tow users
@@ -16,7 +17,7 @@ route.get('/',getAllMessages);
  * @method GET
  * @access private
 */
-route.get('/:id1/:id2',getChatMessages);
+route.get('/:id1/:id2',virfyToken,getChatMessages);
 
 /**
  * @desc get message by id
@@ -24,7 +25,7 @@ route.get('/:id1/:id2',getChatMessages);
  * @method GET
  * @access public
 */
-route.get('/:id',getMessageById);
+route.get('/:id',virfyToken,getMessageById);
 
 /**
  * @desc create a new message
@@ -32,7 +33,7 @@ route.get('/:id',getMessageById);
  * @method POST
  * @access public
 */
-route.post('/',createNewMessage);
+route.post('/',virfyToken,createNewMessage);
 
 /**
  * @desc update message
@@ -40,7 +41,7 @@ route.post('/',createNewMessage);
  * @method PUT
  * @access public
 */
-route.put('/:id',updateMessage);
+route.put('/:id',virfyToken,updateMessage);
 
 /**
  * @desc message be like deleted
@@ -48,7 +49,7 @@ route.put('/:id',updateMessage);
  * @method PUT
  * @access public
 */
-route.put('/likeDeleted/:id',likeDeletMessage);
+route.put('/likeDeleted/:id',virfyToken,likeDeletMessage);
 
 /**
  * @desc delete a message
@@ -56,7 +57,7 @@ route.put('/likeDeleted/:id',likeDeletMessage);
  * @method DELETE
  * @access public
 */
-route.delete('/:id',deleteMessage);
+route.delete('/:id',virfyToken,deleteMessage);
 
 
 module.exports = route
