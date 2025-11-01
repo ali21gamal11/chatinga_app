@@ -41,7 +41,12 @@ io.on("connection",(socket)=>{
         console.log("message received: ",data);
     });
 
-    socket.on("disconnect:",(socket)=>{
+    socket.on("deleteMessage",({messageId,senderId,receiverId})=>{
+        console.log("deleteMessage: ",messageId);
+        io.emit("deleteMessage", { messageId, senderId, receiverId });
+    });
+
+    socket.on("disconnect",()=>{
         console.log("user disconnected",socket.id)
     })
 })
