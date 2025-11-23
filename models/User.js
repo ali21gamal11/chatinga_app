@@ -3,7 +3,7 @@ const joi = require('joi');
 const UserSchema = new mongoose.Schema({
     email:{
         type:String,
-        require:true,
+        required:true,
         minlength:6,
         maxlingth:50,
         unique:true,
@@ -11,20 +11,20 @@ const UserSchema = new mongoose.Schema({
     },
     name:{
         type:String,
-        require:true,
+        required:true,
         minlength:3,
         maxlingth:50,
     },
     age:{
         type:Number,
-        require:true,
+        required:true,
         min:18,
         max:120,
         trim:true
     },
     password:{
         type:String,
-        require:true,
+        required:true,
         minlength:8,
         maxlingth:50,
         trim:true

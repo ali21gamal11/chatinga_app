@@ -1,7 +1,25 @@
 const express = require('express');
 const route = express.Router();
 const {virfyToken} = require("../middleware/verifyToken");
-const { updateMessage,deleteMessage,createNewMessage,getAllMessages,getMessageById,likeDeletMessage,getChatMessages } = require('../controller/messageController');
+const { updateMessage,deleteMessage,createNewMessage,getroomMessages,getAllMessages,getMessageById,likeDeletMessage,getChatMessages } = require('../controller/messageController');
+
+
+/**
+ * @desc get all messages in the room
+ * @route api/message/room/:id1
+ * @method GET
+ * @access public
+*/
+route.get('/room/:id1',virfyToken,getroomMessages);
+
+/**
+ * @desc send messages in the room
+ * @route api/message/room/:id1
+ * @method GET
+ * @access public
+*/
+route.post('/room/:id1', virfyToken, createNewMessage);
+
 
 /**
  * @desc get all messages
@@ -18,6 +36,8 @@ route.get('/',virfyToken,getAllMessages);
  * @access private
 */
 route.get('/:id1/:id2',virfyToken,getChatMessages);
+
+
 
 /**
  * @desc get message by id

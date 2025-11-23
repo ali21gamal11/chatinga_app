@@ -1,4 +1,6 @@
-const bcrypt = require('bcrypt');
+
+const mongoose = require("mongoose");
+
 const {Message,validateNewMessage,validateUpdateMessage,validateLikeDeleteMessage} = require('../models/message');
 
 const getAllMessages = async(req,res)=>{
@@ -38,12 +40,41 @@ const getChatMessages= async (req,res)=>{
         return res.status(400).json({ message: "Both user IDs are required" });
 
         };
+
         const messages = await Message.find({
         $or: [
             { senderId: id1, receiverId: id2 },
             { senderId: id2, receiverId: id1 }
         ]
-        }).sort({ createdAt: 1 });
+        }).populate("senderId", "name").sort({ createdAt: 1 });
+
+        if(messages){
+            res.status(200).json(messages);
+        }else{
+            res.status(404).json({messages:'message not found'});
+        }
+    }catch(err){res.status(400).json({message:`somthing went erong in DataBase, error=>:${err}`})}
+
+}
+
+const getroomMessages= async (req,res)=>{
+    console.log("roomId received:", req.params.id1);
+    try{
+        const { id1 } = req.params;
+        console.log("roomId received:", id1);
+
+        if (!id1) {
+        return res.status(400).json({ message: "required room ID" });
+
+        };
+
+        if (!mongoose.Types.ObjectId.isValid(id1)) {
+            return res.status(400).json({ message: "Invalid room ID" });
+        }
+
+        const messages = await Message.find({
+            receiverId: new mongoose.Types.ObjectId(id1)
+        }).populate("senderId", "name").sort({ createdAt: 1 });
 
         if(messages){
             res.status(200).json(messages);
@@ -133,5 +164,5 @@ const deleteMessage = async(req,res)=>{
 }
 
 module.exports = {
-    updateMessage,deleteMessage,createNewMessage,getAllMessages,getMessageById,likeDeletMessage,getChatMessages
+    updateMessage,deleteMessage,createNewMessage,getAllMessages,getMessageById,likeDeletMessage,getChatMessages,getroomMessages
 }
