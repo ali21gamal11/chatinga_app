@@ -58,22 +58,22 @@ const getChatMessages= async (req,res)=>{
 }
 
 const getroomMessages= async (req,res)=>{
-    console.log("roomId received:", req.params.id1);
+    
     try{
-        const { id1 } = req.params;
-        console.log("roomId received:", id1);
+        const { roomID } = req.params;
+        
 
-        if (!id1) {
+        if (!roomID) {
         return res.status(400).json({ message: "required room ID" });
 
         };
 
-        if (!mongoose.Types.ObjectId.isValid(id1)) {
+        if (!mongoose.Types.ObjectId.isValid(roomID)) {
             return res.status(400).json({ message: "Invalid room ID" });
         }
 
         const messages = await Message.find({
-            receiverId: new mongoose.Types.ObjectId(id1)
+            receiverId: new mongoose.Types.ObjectId(roomID)
         }).populate("senderId", "name").sort({ createdAt: 1 });
 
         if(messages){
@@ -85,6 +85,35 @@ const getroomMessages= async (req,res)=>{
 
 }
 
+const createNewMessageRoom = async(req,res)=>{
+
+     const { senderId,receiverId } = req.body;
+        
+
+        if (!senderId || !receiverId) {
+        return res.status(400).json({ message: "required room ID and user ID" });
+
+        };
+
+    const { error } = validateNewMessage(req.body)
+    if(error){
+        return res.status(400).json({error:error.details[0].message})
+    }
+    try{
+
+        const message = new Message({
+            content:req.body.content,senderId:req.body.senderId,receiverId:req.body.receiverId
+        })
+        
+        const result = await message.save();
+
+        
+        
+        
+        res.status(201).json(result);
+        
+    }catch(err){ res.status(500).json({err:`${err}`})}
+}
 
 const getMessageById = async (req,res)=>{
     try{
@@ -164,5 +193,6 @@ const deleteMessage = async(req,res)=>{
 }
 
 module.exports = {
-    updateMessage,deleteMessage,createNewMessage,getAllMessages,getMessageById,likeDeletMessage,getChatMessages,getroomMessages
+    updateMessage,deleteMessage,createNewMessage,getAllMessages,getMessageById,
+    likeDeletMessage,getChatMessages,getroomMessages,createNewMessageRoom
 }

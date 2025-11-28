@@ -1,7 +1,9 @@
 const express = require('express');
 const route = express.Router();
 const {virfyToken} = require("../middleware/verifyToken");
-const { updateMessage,deleteMessage,createNewMessage,getroomMessages,getAllMessages,getMessageById,likeDeletMessage,getChatMessages } = require('../controller/messageController');
+const { updateMessage,deleteMessage,createNewMessage,getroomMessages,
+    getAllMessages,getMessageById,likeDeletMessage,getChatMessages,
+    createNewMessageRoom } = require('../controller/messageController');
 
 
 /**
@@ -10,7 +12,7 @@ const { updateMessage,deleteMessage,createNewMessage,getroomMessages,getAllMessa
  * @method GET
  * @access public
 */
-route.get('/room/:id1',virfyToken,getroomMessages);
+route.get('/room/:roomID',virfyToken,getroomMessages);
 
 /**
  * @desc send messages in the room
@@ -18,7 +20,7 @@ route.get('/room/:id1',virfyToken,getroomMessages);
  * @method GET
  * @access public
 */
-route.post('/room/:id1', virfyToken, createNewMessage);
+route.post('/room', virfyToken, createNewMessageRoom);
 
 
 /**
