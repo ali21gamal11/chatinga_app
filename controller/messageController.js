@@ -107,7 +107,8 @@ const createNewMessageRoom = async(req,res)=>{
         
         const result = await message.save();
 
-        
+        const io = req.app.get("io");
+        io.emit("newMessageRoom",result);
         
         
         res.status(201).json(result);
