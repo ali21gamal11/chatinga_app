@@ -34,7 +34,7 @@ router.post("/register",asyncHandler(async (req,res)=>{
     })
 
     const result = await user.save();
-    const token = jwt.sign({id:user._id,name:user.name,},process.env.SECKEY);
+    const token = jwt.sign({id:user._id,name:user.name,},process.env.SECKEY,{expiresIn: "7d"});
     const { password , ...other } = result._doc;
     res.status(201).json({...other,token});
 
@@ -63,7 +63,7 @@ router.post("/login",asyncHandler(async(req,res)=>{
         return res.status(400).json({message:"Invalid User or Password"});
     }
 
-    const token = jwt.sign({id:user._id,name:user.name},process.env.SECKEY);
+    const token = jwt.sign({id:user._id,name:user.name},process.env.SECKEY,{expiresIn: "7d"});
     const { password , ...other } = user._doc;
     res.status(201).json({...other,token});
 

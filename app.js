@@ -41,6 +41,13 @@ io.on("connection",(socket)=>{
         console.log("message received: ",data);
     });
 
+    socket.on("block",(data)=>{
+        io.emit("block",data);
+    });
+    
+
+  
+
     socket.on("deleteMessage",({messageId,senderId,receiverId})=>{
         console.log("deleteMessage: ",messageId);
         io.emit("deleteMessage", { messageId, senderId, receiverId });
