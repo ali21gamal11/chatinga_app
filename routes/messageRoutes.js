@@ -3,7 +3,7 @@ const route = express.Router();
 const {virfyToken} = require("../middleware/verifyToken");
 const { updateMessage,deleteMessage,createNewMessage,getroomMessages,
     getAllMessages,getMessageById,likeDeletMessage,getChatMessages,
-    createNewMessageRoom } = require('../controller/messageController');
+    createNewMessageRoom,updatebanList} = require('../controller/messageController');
 
 
 /**
@@ -80,6 +80,8 @@ route.put('/likeDeleted/:id',virfyToken,likeDeletMessage);
  * @access public
 */
 route.delete('/:id',virfyToken,deleteMessage);
+
+
 
 
 module.exports = route

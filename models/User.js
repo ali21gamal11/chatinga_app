@@ -5,7 +5,7 @@ const UserSchema = new mongoose.Schema({
         type:String,
         required:true,
         minlength:6,
-        maxlingth:50,
+        maxlength:50,
         unique:true,
         trim:true
     },
@@ -13,20 +13,27 @@ const UserSchema = new mongoose.Schema({
         type:String,
         required:true,
         minlength:3,
-        maxlingth:50,
+        maxlength:50,
     },
     age:{
         type:Number,
         required:true,
         min:18,
-        max:120,
-        trim:true
+        max:120
+        
+    },
+    bannedList:{
+        type:[{
+            type:mongoose.Schema.Types.ObjectId,
+            ref:'User'
+        }],
+        default:[]
     },
     password:{
         type:String,
         required:true,
         minlength:8,
-        maxlingth:50,
+        maxlength:50,
         trim:true
     },
     isAdmin:{

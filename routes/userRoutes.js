@@ -1,6 +1,17 @@
 const express = require('express');
 const route = express.Router();
-const { updateUser,deleteUser,createNewUSer,getAllUsers,getUserById } = require('../controller/userController');
+const {virfyToken} = require("../middleware/verifyToken");
+const { updateUser,deleteUser,createNewUSer,getAllUsers,getUserById,updatebanList } = require('../controller/userController');
+
+
+
+/**
+ * @desc block/unblock friend
+ * @route api/user/block
+ * @method PUT
+ * @access public
+*/
+route.put('/block',virfyToken,updatebanList);
 
 /**
  * @desc get all users
@@ -36,11 +47,12 @@ route.put('/:id',updateUser);
 
 /**
  * @desc delete a user
- * @route api/message/:id
+ * @route api/user/:id
  * @method DELETE
  * @access public
 */
 route.delete('/:id',deleteUser);
+
 
 
 module.exports = route

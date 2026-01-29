@@ -96,6 +96,16 @@ const deleteUser = async(req,res)=>{
     }
 }
 
+const updatebanList = async(req,res)=>{
+    try{
+        const userId = req.body.userId
+        console.log("وصل يا زميكس",userId);
+        return res.status(200).json({message:"وصلت ل اند بوينت بتاع البان  "})
+    }catch(error){
+        console.log("في خطاء ميطلعش منك",error)
+    }
+}
+
 module.exports = {
-    updateUser,deleteUser,createNewUSer,getAllUsers,getUserById
+    updateUser,deleteUser,createNewUSer,getAllUsers,getUserById,updatebanList
 }
