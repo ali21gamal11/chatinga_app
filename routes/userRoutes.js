@@ -23,7 +23,7 @@ route.get('/',getAllUsers);
 
 /**
  * @desc get user by id
- * @route api/message/:id
+ * @route api/user/:id
  * @method GET
  * @access public
 */
@@ -31,7 +31,7 @@ route.get('/:id',getUserById);
 
 /**
  * @desc create a new user
- * @route api/message/
+ * @route api/user/
  * @method POST
  * @access public
 */

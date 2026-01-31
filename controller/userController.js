@@ -98,11 +98,31 @@ const deleteUser = async(req,res)=>{
 
 const updatebanList = async(req,res)=>{
     try{
-        const userId = req.body.userId
-        console.log("وصل يا زميكس",userId);
-        return res.status(200).json({message:"وصلت ل اند بوينت بتاع البان  "})
+        const userId = req.user.id;
+        const userblockedId = req.body.userblockedId;
+
+        const user = await User.findById(userId);
+        const userBlocked = await User.findById(userblockedId);
+        if(!userBlocked){
+            return res.status(404).json({message:'user not found to be blocked'});
+        }
+
+        const alreadyblocke = user.bannedList.includes(userblockedId);
+
+        if(alreadyblocke){
+            await User.findByIdAndUpdate(userId,{
+            $pull:{bannedList:userblockedId}
+            })
+            return res.status(200).json({message:"user unblocked"});
+        }else{
+            await User.findByIdAndUpdate(userId,{
+            $addToSet:{bannedList:userblockedId}
+            })
+        return res.status(200).json({message:"user blocked"});
+    }
+
     }catch(error){
-        console.log("في خطاء ميطلعش منك",error)
+        console.log("error:",error)
     }
 }
 
