@@ -103,13 +103,18 @@ const updatebanList = async(req,res)=>{
 
         const user = await User.findById(userId);
         const userBlocked = await User.findById(userblockedId);
+
         if(!userBlocked){
             return res.status(404).json({message:'user not found to be blocked'});
         }
 
-        const alreadyblocke = user.bannedList.includes(userblockedId);
+        const heblockedme = userBlocked.bannedList.includes(userId);
+        if(heblockedme){
+            return  res.status(403).json({message:"you cant block this user because he has blocked you"});
+        }
 
-        if(alreadyblocke){
+        const alreadyblocked = user.bannedList.includes(userblockedId);
+        if(alreadyblocked){
             await User.findByIdAndUpdate(userId,{
             $pull:{bannedList:userblockedId}
             })

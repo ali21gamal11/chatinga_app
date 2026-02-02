@@ -1,6 +1,6 @@
 
 const mongoose = require("mongoose");
-
+const {User} = require("../models/User");
 const {Message,validateNewMessage,validateUpdateMessage,validateLikeDeleteMessage} = require('../models/message');
 
 const getAllMessages = async(req,res)=>{
@@ -16,17 +16,23 @@ const createNewMessage = async(req,res)=>{
         return res.status(400).json({error:error.details[0].message})
     }
     try{
-
-        const message = new Message({
-            content:req.body.content,senderId:req.body.senderId,receiverId:req.body.receiverId
-        })
         
-        const result = await message.save();
-
-        const io = req.app.get("io");
-        io.emit("newMessage",result);
+        const user = await User.findById(req.user.id);
+        const blocked = user.bannedList.includes(req.body.receiverId);
+        if(blocked){
+            return res.status(403).json({message:"you are blocked to send message to this user"});
+        }
+            const message = new Message({
+                content:req.body.content,senderId:req.body.senderId,receiverId:req.body.receiverId
+            })
+            const result = await message.save();
+            const io = req.app.get("io");
+            io.emit("newMessage",result);
+            res.status(201).json(result);
         
-        res.status(201).json(result);
+
+
+        
         
     }catch(err){ res.status(500).json({err:`${err}`})}
 }
