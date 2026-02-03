@@ -28,9 +28,11 @@ const path = require("path");
 
 app.use(express.static(path.join(__dirname, "../front/build")));
 
+app.use(express.static(path.join(__dirname, "build")));
+
 app.use((req, res, next) => {
   if (req.method === "GET" && !req.path.startsWith("/api")) {
-    res.sendFile(path.join(__dirname, "../front/build", "index.html"));
+    res.sendFile(path.join(__dirname, "build", "index.html"));
   } else {
     next();
   }
