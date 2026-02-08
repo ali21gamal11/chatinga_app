@@ -17,7 +17,11 @@ const logger = require('./middleware/logger');
 
 app.use(logger)
 app.use(express.json());
-app.use(cors());
+app.use(cors({
+  origin: process.env.CLIENT_URL,
+  credentials: true
+}));
+
 
 app.use('/api/user',user)
 app.use('/api/message',message);
@@ -26,25 +30,18 @@ app.use('/api/auth',auth);
 const path = require("path");
 
 
-app.use(express.static(path.join(__dirname, "../front/build")));
 
-app.use((req, res, next) => {
-  if (req.method === "GET" && !req.path.startsWith("/api")) {
-    res.sendFile(path.join(__dirname, "build", "index.html"));
-  } else {
-    next();
-  }
-});
 
 
 const server = http.createServer(app);
 
 const io = new Server(server,{
     cors:{
-        origin:"*",
+        origin: process.env.CLIENT_URL,
         methods:["GET","POST"]
     }
 });
+
 
 app.set("io",io);
 
